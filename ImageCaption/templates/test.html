@@ -1,0 +1,26 @@
+<html>
+<head><title>Welcome to Image Captioning - Group15/Cohort20</title></head>
+<body align='center' bgcolor = 'grey'>
+
+<form method='post'>
+<table align = 'center' bgcolor = ' #f0a594 '>
+<tr><td>
+<table align='center' bgcolor = 'grey'>
+<tr><td colspan = 2><h3 style="background-color:DodgerBlue;">Please Enter "ImageID" to Predict Caption</h3></td></tr>
+<tr><td>Enter Image ID</td><td><input type='text' name = 'ImageID' value = "{{ImageID}}"</td></tr>
+<tr><td colspan = 2><input type='submit' value ='Predict Caption'> </td></tr>
+</table>
+</td></tr>
+<tr><td>
+<table align = 'center'>
+<tr><td colspan=2><p align='center'>Predicted Caption is:{{result}}</p></td></tr>
+<!-- This is COMMENTED <tr><td colspan=2><img src={{pic}}></td></tr> -->
+<tr><td colspan=2><img src={{pic}}></td></tr>
+</table>
+</td></tr>
+</table>
+
+</form>
+</body>
+
+</html>
