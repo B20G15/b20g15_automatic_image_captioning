@@ -1,9 +1,7 @@
+#UPDATE
+#from fastapi import FastAPI, File, UploadFile
 from fastapi import FastAPI,Request,Form,File,UploadFile
 from fastapi.templating import Jinja2Templates
-import os
-from PIL import Image
-import pickle
-import string
 
 import torch
 from torch import nn
@@ -17,27 +15,22 @@ import os
 from PIL import Image
 import pickle
 import string
-
-#import tensorflow as tf
-
-#import tensorflow as tf
+import tensorflow as tf
 #from tensorflow.keras.applications.vgg16 import VGG16, preprocess_input
-#from tensorflow.keras.preprocessing.image import load_img, img_to_array
+from tensorflow.keras.preprocessing.image import load_img, img_to_array
 from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 from tensorflow.keras.models import Model
 #from tensorflow.keras.utils import to_categorical, plot_model
 #from tensorflow.keras.layers import Input, Dense, LSTM, Embedding, Dropout, add
 
-app = FastAPI()
-templates = Jinja2Templates(directory = 'templates/')
-
+#UPDATE
+#BASE_DIR = r'C:\Users\hanum\Documents\Dataset\Flicker8k_Dataset'
 BASE_DIR = r'C:\B20\Dataset\Flicker8k_Dataset'
 #WORKING_DIR =
+#UPDATE
+#CAPTIONS_DIR = r'C:\Users\hanum\Documents\Dataset\Flicker8k_Text\Flickr8k.token.txt'
 CAPTIONS_DIR = r'C:\B20\Dataset\Flicker8k_Text\Flickr8k.token.txt'
-
-#model_path = "model.h5"
-model_path = "C:\B20\ImageCaption\ImageCaptionModel.h5"
 
 
 with open(os.path.join(CAPTIONS_DIR), 'r') as f:
@@ -91,11 +84,12 @@ def idx_to_word(integer, tokenizer):
             return word
     return None
 
-#pickle_features = pickle.load(open('features.pkl', 'rb'))
-pickle_features = pickle.load(open('C:\B20\ImageCaption\features.pkl', 'rb'))
+pickle_features = pickle.load(open('features.pkl', 'rb'))
 
-#model_path = "model.h5" #"C:\B20\ImageCaption\ImageCaptionModel.h5"
-model = tensorflow.keras.models.load_model(model_path)
+#UPDATE
+#model_path = "model.h5"
+model_path = "ImageCaptionModel.h5"
+model = tf.keras.models.load_model(model_path)
 
 def predict_caption(model, image, tokenizer, max_length):
     # add start tag for generation process
@@ -138,24 +132,25 @@ def generate_caption(image_name):
 #    plt.imshow(image)
     return y_pred
 
+#UPDATE
+#@app.post("/predict")
+#def caption(file: UploadFile = File(...)):
+#    result = generate_caption(file.filename)
+#    return {'Caption for the given image is': result}
+#    #return {"filename": file.filename}
+
+app = FastAPI()
+templates = Jinja2Templates(directory = 'templates/')
 @app.get('/')
 def read_form():
     return 'hello world'
+
+@app.get('/test2')
+def read_form():
+    return 'hello test2'
+
 @app.get('/test')
 def form_post(request:Request):
-    res = '{{<Caption>}}'
-    #return templates.TemplateResponse('test.html',context  = {'request':request,'result':res})
-    return templates.TemplateResponse('test.html',context  = {'request':request,'result':res})
-@app.post('/test')
-def form_post(request:Request,ImageID:int=Form(...)):
-        #result = dt.predict([[ImageID]])
-        result = ImageID
-        t = 'Caption_Sample'
-        pic = 'https://cdn.pixabay.com/photo/2017/05/24/08/22/iris-2339883_1280.jpg'
-        #pic = 'path_of_input_ImageID.jpg file'
-        return templates.TemplateResponse('test.html',context = {'request':request,'result':t,'ImageID':ImageID,'pic':pic})
-
-   
-
-
-
+   res = '{{<Caption>}}'
+   return templates.TemplateResponse('test.html',context  = {'request':request,'result':res})
+   #return templates.TemplateResponse('test.html',context  = {'request':request,'result':res})
