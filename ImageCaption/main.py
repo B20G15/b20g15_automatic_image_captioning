@@ -119,17 +119,8 @@ def predict_caption(model, image, tokenizer, max_length):
 
 def generate_caption(image_name):
     image_id = image_name.split('.')[0]
-#    img_path = os.path.join(BASE_DIR, image_name)
-#    image = Image.open(img_path)
-#    captions = mapping[image_id]
-#    print('---------------------Actual---------------------')
-#    for caption in captions:
-#        print(caption)
     # predict the caption
     y_pred = predict_caption(model, pickle_features[image_id], tokenizer, max_length)
-#    print('--------------------Predicted--------------------')
-#    print(y_pred)
-#    plt.imshow(image)
     return y_pred
 
 #UPDATE
@@ -149,8 +140,15 @@ def read_form():
 def read_form():
     return 'hello test2'
 
-@app.get('/test')
+@app.get("/test")
 def form_post(request:Request):
-   res = '{{<Caption>}}'
-   return templates.TemplateResponse('test.html',context  = {'request':request,'result':res})
-   #return templates.TemplateResponse('test.html',context  = {'request':request,'result':res})
+    #res = '{{<Caption>}}'
+    return templates.TemplateResponse('test.html',context  = {'request':request})
+    #return templates.TemplateResponse('test_image_caption.html',context  = {'request':request,'result':res})
+
+@app.post("/test")
+def form_post(request:Request, ImageID:str=Form(...)):
+        result = generate_caption(ImageID)
+        #pic = 'https://cdn.pixabay.com/photo/2017/05/24/08/22/iris-2339883_1280.jpg'
+        pic = f'https://raw.githubusercontent.com/B20G15/b20g15_automatic_image_captioning/main/ImageCaption/Images/{ImageID}'
+        return templates.TemplateResponse('test.html',context = {'request':request,'result':result,'ImageID':ImageID,'pic':pic})   
