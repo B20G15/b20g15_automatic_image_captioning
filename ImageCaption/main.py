@@ -1,37 +1,33 @@
-#UPDATE
-#from fastapi import FastAPI, File, UploadFile
 from fastapi import FastAPI,Request,Form,File,UploadFile
 from fastapi.templating import Jinja2Templates
 
-import torch
-from torch import nn
-from torch import optim
-import torch.nn.functional as F
-from torchvision import datasets, transforms, models
-from torch.autograd import Variable
-import pandas as pd
 import numpy as np
 import os
-from PIL import Image
 import pickle
 import string
+
+#UPDATE   -- required To resolve -- AttributeError: module 'collections' has no attribute 'Callable'
+import collections
+collections.Callable = collections.abc.Callable
+
 import tensorflow as tf
-#from tensorflow.keras.applications.vgg16 import VGG16, preprocess_input
-from tensorflow.keras.preprocessing.image import load_img, img_to_array
 from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 from tensorflow.keras.models import Model
-#from tensorflow.keras.utils import to_categorical, plot_model
-#from tensorflow.keras.layers import Input, Dense, LSTM, Embedding, Dropout, add
 
 #UPDATE
-#BASE_DIR = r'C:\Users\hanum\Documents\Dataset\Flicker8k_Dataset'
-BASE_DIR = r'C:\B20\Dataset\Flicker8k_Dataset'
-#WORKING_DIR =
+#pickle_features = pickle.load(open('features.pkl', 'rb'))
+FEATURES_PATH = r'C:\B20\Dataset\features.pkl'
+pickle_features = pickle.load(open(FEATURES_PATH, 'rb'))
+
+#UPDATE
+#model_path = "model.h5"
+model_path = r'C:\B20\Dataset\ImageCaptionModel.h5'
+model = tf.keras.models.load_model(model_path)
+
 #UPDATE
 #CAPTIONS_DIR = r'C:\Users\hanum\Documents\Dataset\Flicker8k_Text\Flickr8k.token.txt'
 CAPTIONS_DIR = r'C:\B20\Dataset\Flicker8k_Text\Flickr8k.token.txt'
-
 
 with open(os.path.join(CAPTIONS_DIR), 'r') as f:
     captions_doc = f.read()
@@ -83,13 +79,6 @@ def idx_to_word(integer, tokenizer):
         if index == integer:
             return word
     return None
-
-pickle_features = pickle.load(open('features.pkl', 'rb'))
-
-#UPDATE
-#model_path = "model.h5"
-model_path = "ImageCaptionModel.h5"
-model = tf.keras.models.load_model(model_path)
 
 def predict_caption(model, image, tokenizer, max_length):
     # add start tag for generation process
