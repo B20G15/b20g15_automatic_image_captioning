@@ -1,5 +1,9 @@
+#UPDATE
 from fastapi import FastAPI,Request,Form,File,UploadFile
 from fastapi.templating import Jinja2Templates
+from fastapi.responses import HTMLResponse, FileResponse
+import base64
+#import shutil
 
 import numpy as np
 import os
@@ -112,6 +116,29 @@ def generate_caption(image_name):
     y_pred = predict_caption(model, pickle_features[image_id], tokenizer, max_length)
     return y_pred
 
+app = FastAPI()
+templates = Jinja2Templates(directory = 'templates/')
+
+@app.get("/predict/", response_class=HTMLResponse)
+async def upload(request: Request):
+   return templates.TemplateResponse("test.html", {"request": request})
+   
+@app.post("/predicted/")
+async def create_upload_file(request:Request, file: UploadFile = File(...)):
+        ImageID = file.filename
+        result = generate_caption(ImageID) 
+        #pic = 'https://cdn.pixabay.com/photo/2017/05/24/08/22/iris-2339883_1280.jpg'
+        #pic = f'https://raw.githubusercontent.com/B20G15/b20g15_automatic_image_captioning/main/ImageCaption/Images/{ImageID}'
+        
+        data = file.file.read()
+        file.file.close()
+        # encoding the image
+        encoded_image = base64.b64encode(data).decode("utf-8")
+        
+        return templates.TemplateResponse('test.html',context = {'request':request,'result':result,'pic':encoded_image})
+        #return templates.TemplateResponse('test.html',context = {'request':request,'result':result})
+
+
 #UPDATE
 #@app.post("/predict")
 #def caption(file: UploadFile = File(...)):
@@ -119,25 +146,32 @@ def generate_caption(image_name):
 #    return {'Caption for the given image is': result}
 #    #return {"filename": file.filename}
 
-app = FastAPI()
-templates = Jinja2Templates(directory = 'templates/')
-@app.get('/')
-def read_form():
-    return 'hello world'
+# @app.get('/')
+# def read_form():
+#     return 'hello world'
 
-@app.get('/test2')
-def read_form():
-    return 'hello test2'
+# @app.get('/test2')
+# def read_form():
+#     return 'hello test2'
 
-@app.get("/test")
-def form_post(request:Request):
-    #res = '{{<Caption>}}'
-    return templates.TemplateResponse('test.html',context  = {'request':request})
-    #return templates.TemplateResponse('test_image_caption.html',context  = {'request':request,'result':res})
+#       with open("destination.png", "wb") as buffer:
+#           shutil.copyfileobj(file.file, buffer)
+#           pic = f'destination.png' 
 
-@app.post("/test")
-def form_post(request:Request, ImageID:str=Form(...)):
-        result = generate_caption(ImageID)
-        #pic = 'https://cdn.pixabay.com/photo/2017/05/24/08/22/iris-2339883_1280.jpg'
-        pic = f'https://raw.githubusercontent.com/B20G15/b20g15_automatic_image_captioning/main/ImageCaption/Images/{ImageID}'
-        return templates.TemplateResponse('test.html',context = {'request':request,'result':result,'ImageID':ImageID,'pic':pic})   
+# # dynamic.py
+# import base64
+
+# @app.get("/dynamic", response_class=HTMLResponse)
+# def dynamic_file(request: Request):
+#     return templates.TemplateResponse("dynamic.html", {"request": request})
+
+# @app.post("/dynamic")
+# def dynamic(request: Request, file: UploadFile = File()):
+#     data = file.file.read()
+#     file.file.close()
+
+#     # encoding the image
+#     #encoded_image = base64.b64encode(data).decode("utf-8")
+
+#     #return templates.TemplateResponse("dynamic.html", {"request": request,  "img": encoded_image})
+#     return templates.TemplateResponse("dynamic.html", {"request": request})

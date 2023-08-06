@@ -1,27 +1,44 @@
 <html>
-<head><title>Welcome to Image Captioning - Group15/Cohort20</title></head>
-<body align='center' bgcolor = 'grey'>
-
-<form method='post'>
-<table align = 'center' bgcolor = ' #f0a594 '>
-<tr><td>
-<table align='center' bgcolor = 'grey'>
-<tr><td colspan = 2><h3 style="background-color:DodgerBlue;">Please Enter "ImageID" to Predict Caption</h3></td></tr>
-<tr><td>Enter Image ID</td><td><input type='text' name = 'ImageID' value = "{{ImageID}}"</td></tr>
-<tr><td colspan = 2><input type='submit' value ='Predict Caption'> </td></tr>
-</table>
-</td></tr>
-<tr><td>
-<table align = 'center'>
-<tr><td colspan=2><p align='center'>Predicted Caption is</p></td></tr>
-<tr><td colspan=2><p align='center'>{{result}}</p></td></tr>
-<!-- This is COMMENTED <tr><td colspan=2><img src={{pic}}></td></tr> -->
-<tr><td colspan=2><img src={{pic}}></td></tr>
-</table>
-</td></tr>
-</table>
-
-</form>
+<body align='center' bgcolor = 'black'>
+      
+	<table align = 'center' bgcolor = ' #f0a594 '>
+	  
+		<tr><td colspan = 2>
+			<h3 style="background-color:DodgerBlue;"><center>Welcome to "Automatic Image Captioning"</center></h3>
+		</td></tr>
+		
+		<tr><td>
+		<table align='center' bgcolor = 'white'>
+	  
+			<form action="http://localhost:8000/predicted" method="POST" enctype="multipart/form-data">
+			<!--form method="POST" enctype="multipart/form-data">-->
+				<input type="file" name="file" />
+				<input type="submit"/>
+			</form>
+			
+		    <br><br>
+			
+			<tr><td>
+			<table align = 'center'>
+				<!--<tr><td colspan=2><p align='center'>Predicted Caption is</p></td></tr>-->
+				<tr><td colspan=2><center><h3 style="background-color:coral;">Predicted Caption is: </h3></center></td></tr>
+				<tr><td colspan=2><p align='center'>{{result}}</p></td></tr>
+				<!--<tr><td colspan=2><img src={{pic}}></td></tr>-->		
+				<!--<tr><td colspan=2><img src="data:image/jpeg;base64,{{pic}}" /></td></tr>-->
+					
+				{% if pic %}
+					<tr><td colspan=2><center><h5 style="background-color:powderblue;">Rendered Image</h5></center></td></tr>
+					<tr><td colspan=2><p align='center'><img src="data:image/jpeg;base64,{{pic}}" /></p></td></tr>
+				{% else %}
+					<tr><td colspan=2><center><h5>Image will be Rendered here...</h5></td></tr>
+				{% endif %}
+		
+			</table>
+			</td></tr>
+		</table>
+		</td></tr>
+			
+	</table>
+	
 </body>
-
 </html>
