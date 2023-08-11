@@ -3,6 +3,7 @@ from fastapi import FastAPI,Request,Form,File,UploadFile
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import HTMLResponse, FileResponse
 import base64
+from fastapi.staticfiles import StaticFiles
 #import shutil
 
 import numpy as np
@@ -139,39 +140,28 @@ async def create_upload_file(request:Request, file: UploadFile = File(...)):
         #return templates.TemplateResponse('test.html',context = {'request':request,'result':result})
 
 
-#UPDATE
-#@app.post("/predict")
-#def caption(file: UploadFile = File(...)):
-#    result = generate_caption(file.filename)
-#    return {'Caption for the given image is': result}
-#    #return {"filename": file.filename}
+#https://geekpython.in/displaying-images-on-the-frontend-using-fastapi
+#---------------Following Code to display any static image from local PC folders
+#---------------"/local_image_folder" - is a sub-path on which the sub-application will be mounted.
+#--------------"Images" is sub-folder (with images) located in root folder where main.py is present
+#app.mount("/local_image_folder", StaticFiles(directory="Images"))
 
-# @app.get('/')
-# def read_form():
-#     return 'hello world'
+#--------------"C:\B20\Dataset" is folder, where images are located
+app.mount("/local_image_folder", StaticFiles(directory="C:\B20\Dataset"))
 
-# @app.get('/test2')
-# def read_form():
-#     return 'hello test2'
+@app.get("/staticimage", response_class=HTMLResponse)
+#@app.get("/", response_class=HTMLResponse)
 
-#       with open("destination.png", "wb") as buffer:
-#           shutil.copyfileobj(file.file, buffer)
-#           pic = f'destination.png' 
-
-# # dynamic.py
-# import base64
-
-# @app.get("/dynamic", response_class=HTMLResponse)
-# def dynamic_file(request: Request):
-#     return templates.TemplateResponse("dynamic.html", {"request": request})
-
-# @app.post("/dynamic")
-# def dynamic(request: Request, file: UploadFile = File()):
-#     data = file.file.read()
-#     file.file.close()
-
-#     # encoding the image
-#     #encoded_image = base64.b64encode(data).decode("utf-8")
-
-#     #return templates.TemplateResponse("dynamic.html", {"request": request,  "img": encoded_image})
-#     return templates.TemplateResponse("dynamic.html", {"request": request})
+def serve_2():
+    return """
+    <html>
+        <head>
+            <title></title>
+        </head>
+        <h1>Static Image Local PC Folder {{directory}}</h1>
+        <body>
+        <!--<img src="local_image_folder/10815824_2997e03d76.jpg">-->
+        <img src="local_image_folder/33108590_d685bfe51c.jpg">
+        </body>
+    </html>
+    """
